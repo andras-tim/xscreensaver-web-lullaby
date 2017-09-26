@@ -49,6 +49,8 @@ class Browser(object):
 
         # INFO: https://github.com/jsdf/previous/blob/master/python-ui/tests/pygtk-hatari-embed-test.py
         web_view_window.reparent(foreign_window, 0, 0)
+        while gtk.events_pending():
+            gtk.main_iteration()
 
         self.__web_view.setWindowFlags(
             Qt.Tool
