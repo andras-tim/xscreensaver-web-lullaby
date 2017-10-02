@@ -79,7 +79,7 @@ Bugs or suggestions? Visit the `issue tracker <https://github.com/andras-tim/xsc
     :target: https://github.com/andras-tim/xscreensaver-web-lullaby/blob/master/LICENSE
     :alt: License
 
-.. |CodeQuality| image:: https://www.codacy.com/project/badge/345af34d2f3c432bb528a0fb48167d92
+.. |CodeQuality| image:: https://www.codacy.com/project/badge/e84a77d864144516b1258aa392ba13ef
     :target: https://www.codacy.com/app/andras-tim/xscreensaver-web-lullaby
     :alt: Code Quality
 
