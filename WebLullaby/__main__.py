@@ -72,6 +72,7 @@ class Browser(object):
         """
         self.__web_view.load(QUrl(url))
 
+    @classmethod
     def __web_view_on_close(self, event):
         """
         :type event: PyQt5.QtGui.QCloseEvent.QCloseEvent
