@@ -4,6 +4,7 @@ import logging
 import os
 import sys
 import gtk
+import subprocess
 from ctypes import c_int
 from PyQt5.QtCore import Qt, QSize, QUrl
 from PyQt5.QtWebKitWidgets import QWebPage, QWebView
@@ -118,6 +119,8 @@ def main():
     url = 'https://web-animations.github.io/web-animations-demos/#galaxy/'
     if len(sys.argv) > 1:
         url = sys.argv[1]
+
+    subprocess.Popen(['/home/tia/bin/my/tia-layout-reset'], stdin=None, stdout=sys.stdout, stderr=sys.stderr)
 
     app = QApplication(sys.argv[:1])
     app.setApplicationDisplayName(APP_NAME)
