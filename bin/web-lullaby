@@ -2,4 +2,4 @@
 set -eufo pipefail
 
 cd "$(dirname "$0")/.."
-python2 "WebLullaby/__main__.py" "$@"
+exec python2 -m WebLullaby "$@"
