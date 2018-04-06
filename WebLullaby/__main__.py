@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 import logging
-
 import os
+import signal
 import sys
 import gtk
 import subprocess
@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QApplication, QMessageBox
 from WebLullaby import APP_NAME
 
 _logger = logging.getLogger(APP_NAME)
+__background_processes = []
 
 
 class Browser(object):
@@ -109,18 +110,34 @@ class _CustomQWebPage(QWebPage):
         ))
 
 
+def __close_background_processes():
+    for background_process in __background_processes:
+        background_process.terminate()
+
+
 def main():
     """
     :rtype: int
     """
+    logging.basicConfig(level=logging.DEBUG)
     logging.basicConfig(level=logging.INFO)
+
     parent_wid = os.environ.get('XSCREENSAVER_WINDOW')
 
-    url = 'https://web-animations.github.io/web-animations-demos/#galaxy/'
+    url = 'https://get.webgl.org/'
+    url = 'file:///home/tia/codes/github-com/web-phosphor/src/index.html'
     if len(sys.argv) > 1:
         url = sys.argv[1]
 
-    subprocess.Popen(['/home/tia/bin/my/tia-layout-reset'], stdin=None, stdout=sys.stdout, stderr=sys.stderr)
+    command_on_start = None
+    if len(sys.argv) > 2:
+        command_on_start = sys.argv[2]
+
+    if command_on_start is not None:
+        signal.signal(signal.SIGTERM, __close_background_processes)
+
+        process = subprocess.Popen(command_on_start, stdin=None, stdout=sys.stdout, stderr=sys.stderr)
+        __background_processes.append(process)
 
     app = QApplication(sys.argv[:1])
     app.setApplicationDisplayName(APP_NAME)
