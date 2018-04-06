@@ -1,14 +1,17 @@
 #!/usr/bin/env python2
+import logging
 
 import os
 import sys
 import gtk
 from ctypes import c_int
 from PyQt5.QtCore import Qt, QSize, QUrl
-from PyQt5.QtWebKitWidgets import QWebView
+from PyQt5.QtWebKitWidgets import QWebPage, QWebView
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from WebLullaby import APP_NAME
+
+_logger = logging.getLogger(APP_NAME)
 
 
 class Browser(object):
@@ -25,6 +28,7 @@ class Browser(object):
 
         self.__web_view.closeEvent = self.__web_view_on_close
         self.__web_view.titleChanged.connect(self.__web_view_on_title_change)
+        self.__web_view.setPage(_CustomQWebPage())
 
     def show_window(self, width=800, height=800):
         """
@@ -95,10 +99,20 @@ class Browser(object):
         self.__web_view.setWindowTitle(browser_title)
 
 
+class _CustomQWebPage(QWebPage):
+    def javaScriptConsoleMessage(self, message, line_number, source):
+        _logger.debug('JsConsole: {message} - {source}:{line}'.format(
+            message=message,
+            source=source,
+            line=line_number
+        ))
+
+
 def main():
     """
     :rtype: int
     """
+    logging.basicConfig(level=logging.INFO)
     parent_wid = os.environ.get('XSCREENSAVER_WINDOW')
 
     url = 'https://web-animations.github.io/web-animations-demos/#galaxy/'
