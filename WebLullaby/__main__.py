@@ -2,6 +2,7 @@
 
 import os
 import sys
+import logging
 import argparse
 
 from . import config
@@ -13,6 +14,11 @@ def main():
     :rtype: int
     """
     options = __parse_args()
+
+    if options.debug:
+        logging.basicConfig(level=logging.DEBUG, format='%(levelname)s %(name)s %(message)s')
+    else:
+        logging.basicConfig(level=logging.INFO, format='%(message)s')
 
     return run(options.screensaver_url)
 
@@ -27,6 +33,8 @@ def __parse_args():
     parser.add_argument('screensaver_url', action='store', nargs='?',
                         default='https://goo.gl/sJembB',
                         help='URL of the screensaver (default: %(default)s)')
+    parser.add_argument('-d', '--debug', action='store_true',
+                        help='Show debug logs')
 
     parsed_args = parser.parse_args()
 

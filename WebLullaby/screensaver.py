@@ -1,4 +1,5 @@
 import gtk
+import logging
 import os
 from ctypes import c_int
 from PyQt5.QtCore import Qt, QSize, QUrl
@@ -6,6 +7,8 @@ from PyQt5.QtWebKitWidgets import QWebView, QWebPage
 from PyQt5.QtWidgets import QMessageBox, QApplication
 
 from . import config
+
+_logger = logging.getLogger(config.APP_NAME)
 
 
 class _Browser(object):
@@ -22,6 +25,7 @@ class _Browser(object):
 
         self.__web_view.closeEvent = self.__web_view_on_close
         self.__web_view.titleChanged.connect(self.__web_view_on_title_change)
+        self.__web_view.setPage(_WebPage())
 
     def show_window(self, width=800, height=800):
         """
@@ -90,6 +94,20 @@ class _Browser(object):
         :type browser_title: str
         """
         self.__web_view.setWindowTitle(browser_title)
+
+
+class _WebPage(QWebPage):
+    def javaScriptConsoleMessage(self, message, line_number, source):
+        """
+        :type message: str
+        :type line_number: int
+        :type source: str
+        """
+        _logger.debug('JsConsole: {message} - {source}:{line}'.format(
+            message=message,
+            source=source,
+            line=line_number
+        ))
 
 
 def run(url):
