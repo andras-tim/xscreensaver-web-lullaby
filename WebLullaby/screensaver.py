@@ -1,6 +1,7 @@
 import gtk
 import logging
 import os
+import signal
 from ctypes import c_int
 from PyQt5.QtCore import Qt, QSize, QUrl
 from PyQt5.QtWebKitWidgets import QWebView, QWebPage
@@ -126,5 +127,8 @@ def run(url):
     else:
         browser.embed_window(int(parent_wid, 16))
     browser.open(url)
+
+    # Handle properly Ctrl+C while QT App is running
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     return app.exec_()
