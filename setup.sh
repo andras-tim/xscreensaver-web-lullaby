@@ -2,5 +2,6 @@
 set -eufo pipefail
 
 apt-get install \
-    python-pyqt5 \
-    python-gtk2
+    python3-gi \
+    libwebkitgtk-3.0-0 \
+    libwebkitgtk-3.0-dev

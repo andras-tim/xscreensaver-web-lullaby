@@ -25,8 +25,8 @@ Now, this project combines advantages of the two POCs, so I use **PyQt** for cre
 Dependencies
 ------------
 
-* `PyGTK <https://pypi.python.org/pypi/PyGTK/>`__ >=2.0, <3.0
-* `PyQt5 <https://pypi.python.org/pypi/PyQt5/>`__ >=5.5, <6.0
+* `PyGObject <https://pypi.python.org/pypi/PyGTK/>`__ >=2.0, <3.0 ???
+* `PyQt5 <https://pypi.python.org/pypi/PyQt5/>`__ >=5.5, <6.0 ???
 
 
 Install dependencies on Ubuntu Xenial

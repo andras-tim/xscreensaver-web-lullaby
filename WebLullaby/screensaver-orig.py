@@ -1,50 +1,45 @@
-import signal
-
 import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('GdkX11', '3.0')
-gi.require_version('WebKit', '3.0')
-from gi.repository import Gtk, GdkX11, WebKit
+gi.require_version('Gtk', '2.0')
+gi.require_version('GdkX11', '2.0')
+from gi.repository import Gtk, GdkX11
 
 import logging
 import os
+import signal
 from ctypes import c_int
+from PyQt5.QtCore import Qt, QSize, QUrl
+from PyQt5.QtWebKitWidgets import QWebView, QWebPage
+from PyQt5.QtWidgets import QMessageBox, QApplication
 
 from . import config
 
 _logger = logging.getLogger(config.APP_NAME)
 
 
-class _Browser:
-    def __init__(self, enable_user_interaction=False):
+class _Browser(object):
+    def __init__(self, app, enable_user_interaction=False):
         """
+        :type app: QApplication
         :type enable_user_interaction: bool
         """
-        self.__window = Gtk.Window(title=config.APP_NAME)
-        self.__window.connect('delete-event', Gtk.main_quit)
+        self.__app = app
 
-        scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.NEVER)
+        self.__web_view = QWebView()
+        self.__web_view.setDisabled(not enable_user_interaction)
+        self.__web_view.setStyleSheet('* { background-color: rgb(0, 0, 0); }')
 
-        self.__web_view = WebKit.WebView()
-        self.__web_view.set_sensitive(enable_user_interaction)
-        self.__web_view.get_settings().set_property("enable-webgl", True)
-        # self.__web_view.setStyleSheet('* { background-color: rgb(0, 0, 0); }')
+        self.__web_view.closeEvent = self.__web_view_on_close
+        self.__web_view.titleChanged.connect(self.__web_view_on_title_change)
+        self.__web_view.setPage(_WebPage())
 
-        # self.__web_view.closeEvent = self.__web_view_on_close
-        self.__web_view.connect('notify::title', self.__web_view_on_title_change)
-        self.__web_view.connect('console-message', self.__web_view_on_console_message)
-        scrolled_window.add(self.__web_view)
-
-        self.__window.add(scrolled_window)
-
-    def show_window(self, width=800, height=600):
+    def show_window(self, width=800, height=800):
         """
         :type width: int
         :type height: int
         """
-        self.__window.set_size_request(width, height)
-        self.__window.show_all()
+        self.__web_view.setBaseSize(width, height)
+
+        self.__web_view.show()
 
     def embed_window(self, foreign_window_id):
         """
@@ -82,7 +77,7 @@ class _Browser:
         """
         :type url: str
         """
-        self.__web_view.open(url)
+        self.__web_view.load(QUrl(url))
 
     @classmethod
     def __web_view_on_close(self, event):
@@ -100,30 +95,24 @@ class _Browser:
     def __web_view_on_load_finished(self):
         self.__web_view.setVisible(True)
 
-    def __web_view_on_title_change(self, web_view, property_spec):
+    def __web_view_on_title_change(self, browser_title):
         """
-        :type web_view: WebKit.WebView
-        :type property_spec: GParamSpec
+        :type browser_title: str
         """
-        browser_title = web_view.get_title()
+        self.__web_view.setWindowTitle(browser_title)
 
-        title = config.APP_NAME
-        if browser_title is not None:
-            title = '{}: {}'.format(title, browser_title)
 
-        self.__window.set_title(title)
-
-    def __web_view_on_console_message(self, web_view, message, line, source):
+class _WebPage(QWebPage):
+    def javaScriptConsoleMessage(self, message, line_number, source):
         """
-        :type web_view: WebKit.WebView
         :type message: str
-        :type line: int
+        :type line_number: int
         :type source: str
         """
         _logger.debug('JsConsole: {message} - {source}:{line}'.format(
             message=message,
             source=source,
-            line=line
+            line=line_number
         ))
 
 
@@ -134,14 +123,17 @@ def run(url):
     """
     parent_wid = os.environ.get('XSCREENSAVER_WINDOW')
 
-    browser = _Browser()
+    app = QApplication([__file__])
+    app.setApplicationDisplayName(config.APP_NAME)
+
+    browser = _Browser(app)
     if parent_wid is None:
         browser.show_window()
     else:
         browser.embed_window(int(parent_wid, 16))
     browser.open(url)
 
-    # Handle properly Ctrl+C while GTK App is running
+    # Handle properly Ctrl+C while QT App is running
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-    return Gtk.main()
+    return app.exec_()
