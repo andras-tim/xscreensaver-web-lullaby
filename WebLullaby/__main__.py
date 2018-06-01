@@ -33,10 +33,12 @@ def __parse_args():
     parser.add_argument('screensaver_url', action='store', nargs='?',
                         default='https://goo.gl/sJembB',
                         help='URL of the screensaver (default: %(default)s)')
+    parser.add_argument('background_command', action='store', nargs='?',
+                        help='URL of the screensaver (default: %(default)s)')
     parser.add_argument('-d', '--debug', action='store_true',
                         help='Show debug logs')
 
-    parsed_args = parser.parse_args()
+    parsed_args, _ = parser.parse_known_args()
 
     return parsed_args
 

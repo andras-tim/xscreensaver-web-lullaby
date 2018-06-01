@@ -2,4 +2,4 @@
 set -eufo pipefail
 
 cd "$(dirname "$0")/.."
-exec python2 -m WebLullaby "$@"
+exec python3 -m WebLullaby "$@"
