@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fandras-tim%2Fxscreensaver-web-lullaby.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fandras-tim%2Fxscreensaver-web-lullaby?ref=badge_shield)
+
 WebLullaby
 ==========
 
@@ -86,3 +88,6 @@ Bugs or suggestions? Visit the `issue tracker <https://github.com/andras-tim/xsc
 .. |IssueStats| image:: https://img.shields.io/github/issues/andras-tim/xscreensaver-web-lullaby.svg
     :target: http://issuestats.com/github/andras-tim/xscreensaver-web-lullaby
     :alt: Issue Stats
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fandras-tim%2Fxscreensaver-web-lullaby.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fandras-tim%2Fxscreensaver-web-lullaby?ref=badge_large)
